@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: testdb
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "123456"
+    volumes: 
+      - ./internal/sql/dump.sql:/docker-entrypoint-initdb.d/dump1.sql
+    ports:
+      - "5432:5432"
