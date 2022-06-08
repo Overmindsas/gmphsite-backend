@@ -1,6 +1,6 @@
 # Приложение для работы с api (получение, запись в бд, вывод содержимого базы данных)
 
-* Объявляется интерфейс UserService в пакете services/user.go
+* Объявляется интерфейс DataService в пакете services/user.go
     * имплиментируется в services/user.impliment.go для работы с бд
     * имплиментируется в handlers/handler.go для работы со стороннем api
 * Есть 2 маршрута (/getdataresp, /getalldata)
