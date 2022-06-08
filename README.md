@@ -13,10 +13,3 @@
 
 * 127.0.0.1:8080/getdararesp
 * 127.0.0.1:8080/getalldata
-
-
-## Сборка и запуск
-
-* sudo make build - делает бинарник сервиса  
-* sudo make  
-*
