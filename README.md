@@ -13,3 +13,10 @@
 
 * 127.0.0.1:8080/getdararesp
 * 127.0.0.1:8080/getalldata
+
+
+## Команды для запуска
+
+* go build cmd/main.go 
+* sudo docker-compose up
+* ls cmd -> ./main
