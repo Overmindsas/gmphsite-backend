@@ -19,4 +19,4 @@
 
 * go build cmd/main.go 
 * sudo docker-compose up
-* ls cmd -> ./main
+* cd cmd -> ./main
