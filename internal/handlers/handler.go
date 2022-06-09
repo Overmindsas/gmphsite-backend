@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Overmindsas/gmphsite-backend/internal/config"
 	"github.com/Overmindsas/gmphsite-backend/internal/model"
 	"github.com/Overmindsas/gmphsite-backend/internal/services"
 	"github.com/gin-gonic/gin"
@@ -28,10 +29,10 @@ func NewUserHandler(userService services.DataService) DataHandler {
 }
 
 func (u *DataHandler) GetData(c *gin.Context) {
-
+	cfg := config.NewConfig()
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		"localhost", "5432", "postgres", "123456", "db")
+		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.DBname)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
