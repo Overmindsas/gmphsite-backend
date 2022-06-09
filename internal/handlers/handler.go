@@ -28,7 +28,18 @@ func NewUserHandler(userService services.DataService) DataHandler {
 }
 
 func (u *DataHandler) GetData(c *gin.Context) {
-	var data *model.Data
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		"localhost", "5432", "postgres", "123456", "db")
+
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
+	var d *model.Data
 	r, err := http.Get("https://favqs.com/api/qotd")
 	if err != nil {
 		fmt.Println(err)
@@ -39,39 +50,51 @@ func (u *DataHandler) GetData(c *gin.Context) {
 		fmt.Println(err)
 	}
 
-	json.Unmarshal([]byte(body), &data)
+	json.Unmarshal([]byte(body), &d)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	//fmt.Println(string(body))
-	if err := c.BindJSON(&body); err != nil {
-		fmt.Println(err)
-	}
+	sqlInsert :=
+		`INSERT INTO userdata
+	(qotd_date,
+	id,
+	dialoge,
+	private_field,
+	tags,
+	url,
+	favorite_count,
+	upvotes_count,
+	downvotes_count,
+	author,
+	author_permalink,
+	body)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
 
-	//fmt.Printf("%T", data.Quote.Body)
-	u.UserService.GetData(
-		data.QotdDate,
-		data.Quote.Id,
-		data.Quote.Dialoge,
-		data.Quote.Private,
-		data.Quote.Tags,
-		data.Quote.URL,
-		data.Quote.FavoritesCount,
-		data.Quote.UpvotesCount,
-		data.Quote.DownvotesCount,
-		data.Quote.Author,
-		data.Quote.AuthorPermalink,
-		data.Quote.Body,
-	)
+	_, err = db.Exec(sqlInsert,
+		d.QotdDate,
+		d.Quote.Id,
+		d.Quote.Dialoge,
+		d.Quote.Private,
+		d.Quote.Tags,
+		d.Quote.URL,
+		d.Quote.FavoritesCount,
+		d.Quote.UpvotesCount,
+		d.Quote.DownvotesCount,
+		d.Quote.Author,
+		d.Quote.AuthorPermalink,
+		d.Quote.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	//u.UserService.GetData()
-	c.JSON(http.StatusOK, &data)
-	fmt.Println(data)
+	c.JSON(http.StatusOK, &d)
+	fmt.Println(d)
 
 }
 
 func (u *DataHandler) GetAllData(c *gin.Context) {
-
 	a := u.UserService.GetAllData()
 	c.JSON(200, a)
 }

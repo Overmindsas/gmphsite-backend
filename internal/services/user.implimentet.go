@@ -45,7 +45,7 @@ func (u *UserImplimented) GetData(
 		author,
 		author_permalink,
 		body)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 
 	_, err := u.db.Exec(sqlInsert,
 		d.QotdDate,
@@ -67,19 +67,31 @@ func (u *UserImplimented) GetData(
 	}
 }
 
-func (u *UserImplimented) GetAllData() model.DataShort {
-	rows, err := u.db.Query("SELECT author, body FROM userdata")
+func (u *UserImplimented) GetAllData() []model.Data {
+	rows, err := u.db.Query("SELECT * FROM userdata")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer rows.Close()
 
-	data := []model.DataShort{}
+	data := []model.Data{}
 
 	for rows.Next() {
-		d := model.DataShort{}
-		err := rows.Scan(d.Author, d.Body)
+		d := model.Data{}
+		err := rows.Scan(
+			&d.QotdDate,
+			&d.Quote.Id,
+			&d.Quote.Dialoge,
+			&d.Quote.Private,
+			&d.Quote.Tags,
+			&d.Quote.URL,
+			&d.Quote.FavoritesCount,
+			&d.Quote.UpvotesCount,
+			&d.Quote.DownvotesCount,
+			&d.Quote.Author,
+			&d.Quote.AuthorPermalink,
+			&d.Quote.Body)
 		if err != nil {
 			log.Fatal(err)
 			continue
@@ -88,5 +100,5 @@ func (u *UserImplimented) GetAllData() model.DataShort {
 
 	}
 
-	return model.DataShort{}
+	return data
 }
